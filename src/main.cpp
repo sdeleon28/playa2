@@ -1,39 +1,44 @@
-#include <iostream>
+#include <functional>  // for function
+#include <iostream>  // for basic_ostream::operator<<, operator<<, endl, basic_ostream, basic_ostream<>::__ostream_type, cout, ostream
+#include <string>    // for string, basic_string, allocator
+#include <vector>    // for vector
 
-#include <ftxui/dom/elements.hpp>
-#include <ftxui/screen/screen.hpp>
-#include <ftxui/screen/string.hpp>
+#include "ftxui/component/captured_mouse.hpp"      // for ftxui
+#include "ftxui/component/captured_mouse.hpp"      // for ftxui
+#include "ftxui/component/component.hpp"           // for Menu
+#include "ftxui/component/component_base.hpp"      // for ComponentBase
+#include "ftxui/component/component_options.hpp"   // for MenuOption
+#include "ftxui/component/component_options.hpp"   // for InputOption
+#include "ftxui/component/screen_interactive.hpp"  // for ScreenInteractive
+#include "ftxui/component/screen_interactive.hpp"  // for Component, ScreenInteractive
+#include "ftxui/dom/elements.hpp"  // for text, hbox, separator, Element, operator|, vbox, border
+#include "ftxui/util/ref.hpp"  // for Ref
 
 int main() {
   using namespace ftxui;
+  auto screen = ScreenInteractive::TerminalOutput();
 
-  auto summary = [&] {
-    auto content = vbox({
-        hbox({text(L"- done:   "), text(L"3") | bold}) | color(Color::Green),
-        hbox({text(L"- active: "), text(L"2") | bold}) | color(Color::RedLight),
-        hbox({text(L"- queue:  "), text(L"9") | bold}) | color(Color::Red),
-    });
-    return window(text(L" Summary "), content);
+  std::vector<std::string> entries = {
+      "entry 1",
+      "entry 2",
+      "entry 3",
   };
+  int selected = 0;
+  int changeCounter = 0;
 
-  auto document =  //
-      vbox({
-          hbox({
-              summary(),
-              summary(),
-              summary() | flex,
-          }),
-          summary(),
-          summary(),
-      });
+  MenuOption option;
+  option.on_change = [&changeCounter]() { changeCounter++; };
+  auto menu = Menu(&entries, &selected, option);
 
-  // Limit the size of the document to 80 char.
-  document = document | size(WIDTH, LESS_THAN, 80);
+  auto component = Container::Vertical({
+      menu,
+  });
 
-  auto screen = Screen::Create(Dimension::Full(), Dimension::Fit(document));
-  Render(screen, document);
+  auto renderer = Renderer(component, [&] {
+    return vbox({text("Selected : " + entries[selected]), separator(),
+                 menu->Render()}) |
+           border;
+  });
 
-  std::cout << screen.ToString() << '\0' << std::endl;
-
-  return EXIT_SUCCESS;
+  screen.Loop(renderer);
 }
