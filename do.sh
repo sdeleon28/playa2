@@ -23,11 +23,11 @@ function configure() {
 }
 
 function build() {
-  cmake --build build/tui --target ftxui-starter
+  cmake --build build/tui --target Playa2Tui
 }
 
 function run() {
-  ./build/tui/ftxui-starter
+  ./build/tui/Projects/Playa2/Playa2Tui_artefacts/Debug/Playa2Tui
 }
 
 function configure_lsp() {
@@ -41,7 +41,7 @@ function configure_lsp() {
     -G Ninja
   rm -f compile_commands.json
   ln -s build/tui-lsp/compile_commands.json compile_commands.json
-  cmake --build build/tui-lsp --target ftxui-starter
+  cmake --build build/tui-lsp --target Playa2Tui
 }
 
 case $1 in

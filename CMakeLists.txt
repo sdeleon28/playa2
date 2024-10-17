@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 3.22)
 
-project(ftxui-starter
+project(Playa2
   LANGUAGES CXX
   VERSION 1.0.0
 )
@@ -26,21 +26,18 @@ FetchContent_Declare(ftxui
 FetchContent_MakeAvailable(ftxui)
 # ------------------------------------------------------------------------------
 
-add_executable(ftxui-starter src/main.cpp)
-target_include_directories(ftxui-starter PRIVATE src)
+function(get_source_files_recursive DIR OUTPUT_VAR)
+    file(GLOB_RECURSE new_source_files
+        LIST_DIRECTORIES false
+        "${DIR}/*.cpp"
+        "${DIR}/*.c"
+        "${DIR}/*.cc"
+        "${DIR}/*.cxx"
+        "${DIR}/*.h"
+        "${DIR}/*.hpp"
+    )
+    set(${OUTPUT_VAR} ${new_source_files} PARENT_SCOPE)
+endfunction()
 
-target_link_libraries(ftxui-starter
-  PRIVATE ftxui::screen
-  PRIVATE ftxui::dom
-  PRIVATE ftxui::component  # Not needed for this example.
-)
-
-if (EMSCRIPTEN)
-  string(APPEND CMAKE_CXX_FLAGS " -s USE_PTHREADS")
-  string(APPEND CMAKE_EXE_LINKER_FLAGS " -s ASYNCIFY")
-  string(APPEND CMAKE_EXE_LINKER_FLAGS " -s PROXY_TO_PTHREAD")
-
-  foreach(file "index.html" "run_webassembly.py")
-    configure_file("src/${file}" ${file})
-  endforeach(file)
-endif()
+add_subdirectory(submodules/JUCE)
+add_subdirectory(Projects/Playa2)
