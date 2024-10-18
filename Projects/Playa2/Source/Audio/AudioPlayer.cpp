@@ -68,7 +68,8 @@ void AudioPlayer::play() {
 }
 
 void AudioPlayer::stop() {
-  resetState();
+  /* resetState(); */
+  playing = false;
 }
 
 void AudioPlayer::processBlock(AudioBuffer<float>& buffer,

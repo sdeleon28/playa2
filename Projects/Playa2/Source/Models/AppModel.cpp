@@ -38,3 +38,10 @@ void AppModel::valueTreePropertyChanged (ValueTree& treeWhosePropertyHasChanged,
         return;
     notifyUpdate();
 }
+
+void AppModel::togglePlaying()
+{
+    appState.setProperty (AppSchema::playing,
+                          ! appState.getProperty (AppSchema::playing, false),
+                          nullptr);
+}

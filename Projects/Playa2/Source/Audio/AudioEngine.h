@@ -32,6 +32,6 @@ private:
     static const int numChannels = 2;
     static const int repetitions = 60;
 
-    AudioPlayer rampProcessor;
+    AudioPlayer player;
     AudioCallback audioCallback;
 };

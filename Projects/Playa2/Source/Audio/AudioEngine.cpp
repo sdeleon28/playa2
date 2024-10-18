@@ -3,7 +3,7 @@
 #include "Schemas/AppSchema.h"
 
 AudioEngine::AudioEngine (ValueTree theAppState)
-    : appState (theAppState), audioCallback (theAppState, rampProcessor)
+    : appState (theAppState), audioCallback (theAppState, player)
 {
     appState.addListener (this);
     audioDeviceManager.initialise (0, 2, nullptr, true, {}, nullptr);
@@ -25,5 +25,7 @@ void AudioEngine::valueTreePropertyChanged (
 {
     if (treeWhosePropertyHasChanged != appState)
         return;
-    // TODO
+    if (property == AppSchema::playing)
+        appState[AppSchema::playing] ? player.play()
+                                     : player.stop();
 }
