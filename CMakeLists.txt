@@ -39,5 +39,9 @@ function(get_source_files_recursive DIR OUTPUT_VAR)
     set(${OUTPUT_VAR} ${new_source_files} PARENT_SCOPE)
 endfunction()
 
+set(CMAKE_CXX_FLAGS "-Wall -Wextra")
+set(CMAKE_CXX_FLAGS_DEBUG "-g")
+set(CMAKE_CXX_FLAGS_RELEASE "-O3")
+
 add_subdirectory(submodules/JUCE)
 add_subdirectory(Projects/Playa2)

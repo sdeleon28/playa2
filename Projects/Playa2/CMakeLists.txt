@@ -6,7 +6,21 @@ get_source_files_recursive(${CMAKE_CURRENT_SOURCE_DIR}/Source ${TargetName}_SOUR
 target_sources(${TargetName} PRIVATE ${${TargetName}_SOURCES})
 
 # add_executable(${TargetName} src/main.cpp)
-target_include_directories(${TargetName} PRIVATE src)
+target_include_directories(${TargetName} PRIVATE Source)
+target_link_libraries(${TargetName}
+  PRIVATE
+    juce::juce_recommended_warning_flags
+    juce::juce_recommended_config_flags
+    juce::juce_recommended_lto_flags)
+target_link_libraries(${TargetName}
+  PRIVATE
+    juce::juce_opengl
+    juce::juce_dsp
+    juce::juce_audio_utils)
+target_compile_definitions(${TargetName}
+  PUBLIC 
+    JUCE_VST3_CAN_REPLACE_VST2=0
+    JUCE_WEB_BROWSER=0)
 
 target_link_libraries(${TargetName}
   PRIVATE ftxui::screen
