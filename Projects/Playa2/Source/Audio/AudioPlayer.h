@@ -38,8 +38,13 @@ class AudioPlayer final : public AudioProcessor {
   void resetState();
   std::pair<float*, int> makeBufferLenPair(const char* clickBinary,
                                            int clickSize);
+  void setCurrentFile(const File& file);
 
  private:
+  double sampleRate = 44100;
+  int samplesPerBlock = 512;
+  std::unique_ptr<AudioFormatReaderSource> audioFormatReaderSource;
+  std::unique_ptr<ResamplingAudioSource> resampler;
   AudioFormatReader* reader = nullptr;
   AudioFormatManager formatManager;
   std::atomic<bool> playing = false;

@@ -19,6 +19,7 @@ public:
     struct DTO
     {
         bool playing;
+        PlaylistEntry currentEntry;
         std::vector<PlaylistEntry> playlist;
     };
 
@@ -33,6 +34,7 @@ public:
     virtual void addListener (Listener* listener) = 0;
     virtual void removeListener (Listener* listener) = 0;
 
+    virtual void setCurrentEntry(int e) = 0;
     virtual void togglePlaying() = 0;
     virtual DTO getState() const = 0;
 };

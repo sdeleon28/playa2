@@ -29,6 +29,16 @@ IAppModel::DTO AppModel::getState() const {
                      .toStdString();
     dto.playlist.push_back(entry);
   }
+  if (dto.playlist.empty()) {
+    PlaylistEntry entry;
+    entry.path = "";
+    dto.currentEntry = entry;
+  } else {
+    dto.currentEntry = dto.playlist[(unsigned long)appState
+                                        .getProperty(AppSchema::currentEntry, 0)
+                                        .toString()
+                                        .getIntValue()];
+  }
   return dto;
 }
 
@@ -47,4 +57,10 @@ void AppModel::togglePlaying() {
   appState.setProperty(AppSchema::playing,
                        !appState.getProperty(AppSchema::playing, false),
                        nullptr);
+}
+
+void AppModel::setCurrentEntry(int e) {
+  jassert(e <
+          appState.getChildWithName(AppSchema::playlistTag).getNumChildren());
+  appState.setProperty(AppSchema::currentEntry, e, nullptr);
 }

@@ -20,7 +20,7 @@ using namespace ftxui;
 void MainScreenView::run() {
   auto screen = ScreenInteractive::TerminalOutput();
   MenuOption option;
-  /* option.on_change = [&changeCounter]() { changeCounter++; }; */
+  option.on_change = [this]() { setCurrentEntry(selected); };
   auto menu = Menu(&entries, &selected, option);
 
   auto component = Container::Vertical({
@@ -55,4 +55,5 @@ void MainScreenView::update(const IAppModel::DTO& dto) {
 
 void MainScreenView::createUi(IMainScreenPresenter& presenter) {
   togglePlay = [&presenter]() { presenter.togglePlay(); };
+  setCurrentEntry = [&presenter](int e) { presenter.setCurrentEntry(e); };
 }

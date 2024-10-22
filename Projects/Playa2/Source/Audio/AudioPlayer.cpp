@@ -2,21 +2,36 @@
 
 AudioPlayer::AudioPlayer() {
   formatManager.registerBasicFormats();
-  juce::File file(
-      "/Users/santi/Dropbox/artistas/joakien/live-2024/wav/06-la-ola.wav");
-  reader = formatManager.createReaderFor(file);
 }
 
 AudioPlayer::~AudioPlayer() {
   delete reader;
 }
 
+void AudioPlayer::setCurrentFile(const File& file) {
+  stop();
+  resetState();
+  if (!file.existsAsFile())
+    return;
+  reader = formatManager.createReaderFor(file);
+  if (!reader)
+    return;
+  audioFormatReaderSource.reset(new AudioFormatReaderSource(reader, true));
+  resampler.reset(
+      new ResamplingAudioSource(audioFormatReaderSource.get(), false, 2));
+  resampler->prepareToPlay((int)sampleRate, samplesPerBlock);
+  resampler->setResamplingRatio(reader->sampleRate / sampleRate);
+  play();
+}
+
 const String AudioPlayer::getName() const {
   return "AudioPlayer";
 }
 
-void AudioPlayer::prepareToPlay(double sampleRate, int samplesPerBlock) {
-  setRateAndBufferSizeDetails(sampleRate, samplesPerBlock);
+void AudioPlayer::prepareToPlay(double theSampleRate, int theSamplesPerBlock) {
+  setRateAndBufferSizeDetails(theSampleRate, theSamplesPerBlock);
+  sampleRate = theSampleRate;
+  samplesPerBlock = theSamplesPerBlock;
 }
 
 void AudioPlayer::releaseResources() {}
@@ -74,12 +89,10 @@ void AudioPlayer::stop() {
 
 void AudioPlayer::processBlock(AudioBuffer<float>& buffer,
                                MidiBuffer& /* midiMessages */) {
-  if (!playing)
+  if (!playing || !resampler)
     return;
-  reader->read(&buffer, 0,
-               std::min(buffer.getNumSamples(),
-                        (int)reader->lengthInSamples - currentSample),
-               currentSample, true, true);
+  AudioSourceChannelInfo info(buffer);
+  resampler->getNextAudioBlock(info);
   currentSample += buffer.getNumSamples();
 }
 

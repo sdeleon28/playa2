@@ -18,6 +18,7 @@ public:
     void valueTreePropertyChanged (ValueTree& treeWhosePropertyHasChanged,
                                    const Identifier& property) override;
     void togglePlaying() override;
+    void setCurrentEntry(int e) override;
     void notifyUpdate();
 private:
 

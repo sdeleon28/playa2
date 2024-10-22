@@ -8,7 +8,6 @@ AudioCallback::AudioCallback (ValueTree theAppState,
       appState (theAppState),
       player (thePlayer)
 {
-    player.prepareToPlay (44100, 4096);
     setProcessor (&player);
     startTimerHz (60);
 }

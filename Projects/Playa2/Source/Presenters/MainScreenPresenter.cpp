@@ -18,3 +18,7 @@ void MainScreenPresenter::onStateUpdated(const IAppModel::DTO& dto) {
 void MainScreenPresenter::togglePlay() {
   appModel.togglePlaying();
 }
+
+void MainScreenPresenter::setCurrentEntry(int e) {
+  appModel.setCurrentEntry(e);
+}
