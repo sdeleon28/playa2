@@ -9,29 +9,28 @@ using namespace juce;
 
 #include "Schemas/AppSchema.h"
 
-#include "AudioPlayer.h"
 #include "AudioCallback.h"
+#include "AudioPlayer.h"
 
-class AudioEngine final : public IAudioEngine, public ValueTree::Listener
-{
-public:
-    AudioEngine (ValueTree appState);
-    ~AudioEngine() override;
+class AudioEngine final : public IAudioEngine, public ValueTree::Listener {
+ public:
+  AudioEngine(ValueTree appState);
+  ~AudioEngine() override;
 
-private:
-    void valueTreePropertyChanged (ValueTree& treeWhosePropertyHasChanged,
-                                   const Identifier& property) override;
+ private:
+  void valueTreePropertyChanged(ValueTree& treeWhosePropertyHasChanged,
+                                const Identifier& property) override;
 
-    ValueTree appState;
-    AudioSourcePlayer audioSourcePlayer;
-    AudioDeviceManager audioDeviceManager;
-    TimeSliceThread previewThread { "audio file preview" };
-    std::unique_ptr<MemoryAudioSource> memoryAudioSource = nullptr;
+  ValueTree appState;
+  AudioSourcePlayer audioSourcePlayer;
+  AudioDeviceManager audioDeviceManager;
+  TimeSliceThread previewThread{"audio file preview"};
+  std::unique_ptr<MemoryAudioSource> memoryAudioSource = nullptr;
 
-    static const unsigned int sampleRate = 44100;
-    static const int numChannels = 2;
-    static const int repetitions = 60;
+  static const unsigned int sampleRate = 44100;
+  static const int numChannels = 2;
+  static const int repetitions = 60;
 
-    AudioPlayer player;
-    AudioCallback audioCallback;
+  AudioPlayer player;
+  AudioCallback audioCallback;
 };

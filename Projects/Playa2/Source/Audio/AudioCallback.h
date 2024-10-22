@@ -2,15 +2,15 @@
 
 #include "AudioPlayer.h"
 
-class AudioCallback : public AudioProcessorPlayer, public Timer
-{
-public:
-    AudioCallback (ValueTree appState, AudioPlayer& player);
-    ~AudioCallback() override;
-    void timerCallback() override;
+class AudioCallback : public AudioProcessorPlayer {
+ public:
+  AudioCallback(ValueTree appState, AudioPlayer& player);
+  ~AudioCallback() override;
 
-private:
-    ValueTree appState;
-    AudioPlayer& player;
-    AudioPlayer::State prevState;
+ private:
+  void pollPlayerState();
+
+  ValueTree appState;
+  AudioPlayer& player;
+  AudioPlayer::State prevState;
 };

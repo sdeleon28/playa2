@@ -57,10 +57,11 @@ int main(int argc, char* argv[]) {
   auto appState = ValueTree{AppSchema::tag};
   auto appModel = AppModelFreeFunctions::createAppModel(appState, paths);
   auto audioEngine = std::make_unique<AudioEngine>(appState);
-  /* themeModel = std::make_unique<ThemeModel>(); */
   auto mainView = std::make_unique<MainScreenView>();
   auto mainScreenPresenter =
       std::make_unique<MainScreenPresenter>(appModel, *mainView);
   mainView->createUi(*mainScreenPresenter);
+  if (!paths.empty())
+    appModel.setCurrentEntry(0);
   mainView->run();
 }

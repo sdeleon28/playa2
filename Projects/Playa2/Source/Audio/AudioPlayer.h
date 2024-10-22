@@ -47,6 +47,6 @@ class AudioPlayer final : public AudioProcessor {
   std::unique_ptr<ResamplingAudioSource> resampler;
   AudioFormatReader* reader = nullptr;
   AudioFormatManager formatManager;
-  std::atomic<bool> playing = false;
+  std::atomic<bool> playing = true;
   std::atomic<int> currentSample = 0;
 };
