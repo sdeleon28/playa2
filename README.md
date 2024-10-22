@@ -1,31 +1,23 @@
-ftxui-starter
--------------
+# playa2
 
-[![Snap Status](https://build.snapcraft.io/badge/ArthurSonzogni/ftxui-starter.svg)](https://build.snapcraft.io/user/ArthurSonzogni/ftxui-starter)
+## Build
 
-[![Build Status](https://travis-ci.com/ArthurSonzogni/ftxui-starter.svg?branch=master)](https://travis-ci.com/ArthurSonzogni/ftxui-starter)
+```
+./do.sh config && ./do.sh build
+```
 
-Minimal starter project using the [FTXUI library](https://github.com/ArthurSonzogni/ftxui)
+## Run
 
+```
+./do.sh run -f /path/to/playlist.txt
+```
 
-# Build instructions:
-~~~bash
-mkdir build
-cd build
-cmake ..
-make -j
-cd ../target
-./ftxui-starter
-~~~
+`playlist.txt` is a file containing paths to the audio files to play, one per line.
 
-## Webassembly build:
-~~~bash
-mkdir build_emscripten && cd build_emscripten
-emcmake cmake ..
-make -j
-./run_webassembly.py
-(visit localhost:8000)
-~~~
+## Usage
 
-## Linux snap build:
-Upload your game to github and visit https://snapcraft.io/build.
+* 1-0: set track
+* q-p: set track progress
+* j: down
+* k: up
+* space: play/pause
