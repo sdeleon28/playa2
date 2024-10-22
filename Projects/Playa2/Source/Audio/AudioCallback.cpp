@@ -20,6 +20,10 @@ void AudioCallback::pollPlayerState() {
   if (state.currentSample != prevState.currentSample)
     appState.setProperty(AppSchema::currentSample, state.currentSample,
                          nullptr);
+  if (std::abs(prevProgress - state.progress) > 0.001) {
+    appState.setProperty(AppSchema::progress, state.progress, nullptr);
+    prevProgress = state.progress;
+  }
   if (state.playing != prevState.playing) {
     appState.setProperty(AppSchema::playing, state.playing, nullptr);
   }

@@ -19,6 +19,7 @@ public:
     struct DTO
     {
         bool playing;
+        float progress = 0;
         PlaylistEntry currentEntry;
         std::vector<PlaylistEntry> playlist;
     };

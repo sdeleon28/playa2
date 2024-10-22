@@ -105,5 +105,10 @@ AudioPlayer::State AudioPlayer::getState() {
   State state;
   state.playing = playing;
   state.currentSample = currentSample;
+  if (!reader)
+    return state;
+  float ratio = (float)reader->sampleRate / (float)sampleRate;
+  auto lengthInSamples = (float)reader->lengthInSamples / ratio;
+  state.progress = (float)currentSample / lengthInSamples;
   return state;
 }

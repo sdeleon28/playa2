@@ -7,3 +7,4 @@ Identifier AppSchema::currentEntry = "currentEntry";
 Identifier AppSchema::playlistTag = "playlistTag";
 Identifier AppSchema::playlistEntryTag = "playlistEntryTag";
 Identifier AppSchema::playlistEntryPath = "playlistEntryPath";
+Identifier AppSchema::progress = "progress";

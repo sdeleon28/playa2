@@ -9,6 +9,7 @@ class AudioPlayer final : public AudioProcessor {
   struct State {
     bool playing = false;
     int currentSample = 0;
+    float progress = 0.f;
   };
 
   AudioPlayer();

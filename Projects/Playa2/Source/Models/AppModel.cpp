@@ -39,6 +39,7 @@ IAppModel::DTO AppModel::getState() const {
                                         .toString()
                                         .getIntValue()];
   }
+  dto.progress = appState.getProperty(AppSchema::progress, 0.0f);
   return dto;
 }
 

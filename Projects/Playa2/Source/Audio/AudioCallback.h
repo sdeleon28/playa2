@@ -13,4 +13,5 @@ class AudioCallback : public AudioProcessorPlayer {
   ValueTree appState;
   AudioPlayer& player;
   AudioPlayer::State prevState;
+  float prevProgress = 0.f;
 };
