@@ -19,13 +19,6 @@ using namespace ftxui;
 
 void MainScreenView::run() {
   auto screen = ScreenInteractive::TerminalOutput();
-
-  std::vector<std::string> entries = {
-      "entry 1",
-      "entry 2",
-      "entry 3",
-  };
-
   MenuOption option;
   /* option.on_change = [&changeCounter]() { changeCounter++; }; */
   auto menu = Menu(&entries, &selected, option);
@@ -55,6 +48,9 @@ void MainScreenView::run() {
 
 void MainScreenView::update(const IAppModel::DTO& dto) {
   playing = dto.playing;
+  entries.clear();
+  for (auto& entry : dto.playlist)
+    entries.push_back(entry.path);
 }
 
 void MainScreenView::createUi(IMainScreenPresenter& presenter) {

@@ -4,6 +4,7 @@ MainScreenPresenter::MainScreenPresenter(IAppModel& theAppModel,
                                          IMainScreenView& theView)
     : appModel(theAppModel), view(theView) {
   appModel.addListener(this);
+  onStateUpdated(appModel.getState());
 }
 
 MainScreenPresenter::~MainScreenPresenter() {

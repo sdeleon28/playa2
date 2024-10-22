@@ -10,9 +10,16 @@ class IAppModel
 public:
     virtual ~IAppModel() = default;
 
+    // TODO: This will hold other playlist metadata like the tempo, key, etc.
+    struct PlaylistEntry
+    {
+        std::string path;
+    };
+
     struct DTO
     {
         bool playing;
+        std::vector<PlaylistEntry> playlist;
     };
 
     class Listener

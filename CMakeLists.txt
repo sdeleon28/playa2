@@ -45,3 +45,4 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
 add_subdirectory(submodules/JUCE)
 add_subdirectory(Projects/Playa2)
+add_subdirectory(Projects/Playa2Tests)

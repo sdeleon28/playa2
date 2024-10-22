@@ -1,47 +1,50 @@
 #include "AppModel.h"
 #include "Schemas/AppSchema.h"
 
-AppModel::AppModel (ValueTree theAppState) : appState (theAppState)
-{
-    appState.addListener (this);
-    notifyUpdate();
+AppModel::AppModel(ValueTree theAppState) : appState(theAppState) {
+  appState.addListener(this);
+  notifyUpdate();
 }
 
-AppModel::~AppModel() { appState.removeListener (this); }
-
-void AppModel::addListener (IAppModel::Listener* listener)
-{
-    listeners.add (listener);
+AppModel::~AppModel() {
+  appState.removeListener(this);
 }
 
-void AppModel::removeListener (IAppModel::Listener* listener)
-{
-    listeners.remove (listener);
+void AppModel::addListener(IAppModel::Listener* listener) {
+  listeners.add(listener);
 }
 
-IAppModel::DTO AppModel::getState() const
-{
-    DTO dto;
-    dto.playing = appState.getProperty (AppSchema::playing, false);
-    return dto;
+void AppModel::removeListener(IAppModel::Listener* listener) {
+  listeners.remove(listener);
 }
 
-void AppModel::notifyUpdate()
-{
-    listeners.call (&IAppModel::Listener::onStateUpdated, getState());
+IAppModel::DTO AppModel::getState() const {
+  DTO dto;
+  dto.playing = appState.getProperty(AppSchema::playing, false);
+  auto playlist = appState.getChildWithName(AppSchema::playlistTag);
+  for (auto child : playlist) {
+    PlaylistEntry entry;
+    entry.path = child.getProperty(AppSchema::playlistEntryPath, "")
+                     .toString()
+                     .toStdString();
+    dto.playlist.push_back(entry);
+  }
+  return dto;
 }
 
-void AppModel::valueTreePropertyChanged (ValueTree& treeWhosePropertyHasChanged,
-                                         const Identifier&)
-{
-    if (treeWhosePropertyHasChanged != appState)
-        return;
-    notifyUpdate();
+void AppModel::notifyUpdate() {
+  listeners.call(&IAppModel::Listener::onStateUpdated, getState());
 }
 
-void AppModel::togglePlaying()
-{
-    appState.setProperty (AppSchema::playing,
-                          ! appState.getProperty (AppSchema::playing, false),
-                          nullptr);
+void AppModel::valueTreePropertyChanged(ValueTree& treeWhosePropertyHasChanged,
+                                        const Identifier&) {
+  if (treeWhosePropertyHasChanged != appState)
+    return;
+  notifyUpdate();
+}
+
+void AppModel::togglePlaying() {
+  appState.setProperty(AppSchema::playing,
+                       !appState.getProperty(AppSchema::playing, false),
+                       nullptr);
 }

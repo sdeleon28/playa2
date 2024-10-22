@@ -18,8 +18,8 @@ public:
     void valueTreePropertyChanged (ValueTree& treeWhosePropertyHasChanged,
                                    const Identifier& property) override;
     void togglePlaying() override;
-private:
     void notifyUpdate();
+private:
 
     ListenerList<IAppModel::Listener> listeners;
     ValueTree appState;
