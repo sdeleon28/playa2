@@ -1,5 +1,7 @@
 # playa2
 
+A comfy command line audio player.
+
 ## Build
 
 ```
