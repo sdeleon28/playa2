@@ -1,16 +1,21 @@
 #include "AudioPlayer.h"
 
-AudioPlayer::AudioPlayer() {
+#include "Schemas/AppSchema.h"
+
+AudioPlayer::AudioPlayer(ValueTree theAppState) : appState(theAppState) {
+  appState.addListener(this);
   formatManager.registerBasicFormats();
 }
 
 AudioPlayer::~AudioPlayer() {
+  appState.removeListener(this);
   delete reader;
 }
 
 void AudioPlayer::setCurrentFile(const File& file) {
   stop();
   resetState();
+  currentFilePath = file.getFullPathName().toStdString();
   if (!file.existsAsFile())
     return;
   reader = formatManager.createReaderFor(file);
@@ -82,9 +87,25 @@ void AudioPlayer::play() {
   playing = true;
 }
 
-void AudioPlayer::stop() {
-  /* resetState(); */
+void AudioPlayer::pause() {
   playing = false;
+}
+
+void AudioPlayer::stop() {
+  resetState();
+  playing = false;
+}
+
+void AudioPlayer::playNextTrack() {
+  stop();
+  auto playlist = appState.getChildWithName(AppSchema::playlistTag);
+  auto child = playlist.getChild(currentEntry + 1);
+  auto path = child.getProperty(AppSchema::playlistEntryPath, "")
+                  .toString()
+                  .toStdString();
+  setCurrentFile(File(path));
+  currentEntry++;
+  play();
 }
 
 void AudioPlayer::processBlock(AudioBuffer<float>& buffer,
@@ -94,6 +115,21 @@ void AudioPlayer::processBlock(AudioBuffer<float>& buffer,
   AudioSourceChannelInfo info(buffer);
   resampler->getNextAudioBlock(info);
   currentSample += buffer.getNumSamples();
+  float ratio = (float)reader->sampleRate / (float)sampleRate;
+  if ((float)currentSample > (float)reader->lengthInSamples / ratio) {
+    playNextTrack();
+  }
+}
+
+void AudioPlayer::setCurrentProgress(float progress) {
+  pause();
+  jassert(progress >= 0.f && progress <= 1.f);
+  int64 newPosition =
+      static_cast<int64>((float)reader->lengthInSamples * progress);
+  audioFormatReaderSource->setNextReadPosition(newPosition);
+  float ratio = (float)reader->sampleRate / (float)sampleRate;
+  currentSample = (int)((float)newPosition / ratio);
+  play();
 }
 
 void AudioPlayer::resetState() {
@@ -105,10 +141,32 @@ AudioPlayer::State AudioPlayer::getState() {
   State state;
   state.playing = playing;
   state.currentSample = currentSample;
+  state.currentEntry = currentEntry;
   if (!reader)
     return state;
   float ratio = (float)reader->sampleRate / (float)sampleRate;
   auto lengthInSamples = (float)reader->lengthInSamples / ratio;
   state.progress = (float)currentSample / lengthInSamples;
   return state;
+}
+
+void AudioPlayer::valueTreePropertyChanged(
+    ValueTree& treeWhosePropertyHasChanged,
+    const Identifier& property) {
+  if (treeWhosePropertyHasChanged != appState)
+    return;
+  if (property == AppSchema::playing)
+    appState[AppSchema::playing] ? play() : pause();
+  if (property == AppSchema::currentEntry) {
+    auto playlist = appState.getChildWithName(AppSchema::playlistTag);
+    currentEntry = (int)appState[AppSchema::currentEntry];
+    auto child = playlist.getChild(currentEntry);
+    auto path = child.getProperty(AppSchema::playlistEntryPath, "")
+                    .toString()
+                    .toStdString();
+    setCurrentFile(File(path));
+  }
+  if (property == AppSchema::progress) {
+    setCurrentProgress(appState[AppSchema::progress]);
+  }
 }

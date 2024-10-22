@@ -36,6 +36,7 @@ public:
     virtual void removeListener (Listener* listener) = 0;
 
     virtual void setCurrentEntry(int e) = 0;
+    virtual void setCurrentProgress(float p) = 0;
     virtual void togglePlaying() = 0;
     virtual DTO getState() const = 0;
 };

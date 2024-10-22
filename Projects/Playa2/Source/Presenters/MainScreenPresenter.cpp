@@ -22,3 +22,7 @@ void MainScreenPresenter::togglePlay() {
 void MainScreenPresenter::setCurrentEntry(int e) {
   appModel.setCurrentEntry(e);
 }
+
+void MainScreenPresenter::setCurrentProgress(float p) {
+  appModel.setCurrentProgress(p);
+}

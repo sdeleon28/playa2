@@ -21,6 +21,8 @@ void MainScreenView::run() {
   });
 
   std::vector<char> nums = {'1', '2', '3', '4', '5', '6', '7', '8', '9', '0'};
+  std::vector<char> progressChars = {'q', 'w', 'e', 'r', 't',
+                                     'y', 'u', 'i', 'o', 'p'};
   out = CatchEvent(renderer, [&](Event event) {
     if (event == Event::Character('g')) {
       setCurrentEntry(0);
@@ -38,6 +40,14 @@ void MainScreenView::run() {
     for (auto c : nums) {
       if (event == Event::Character(c) && (int)entries.size() > i) {
         setCurrentEntry(i);
+        return true;
+      }
+      i++;
+    }
+    i = 0;
+    for (auto c : progressChars) {
+      if (event == Event::Character(c)) {
+        setCurrentProgress((float)i * 0.1f);
         return true;
       }
       i++;
@@ -77,10 +87,14 @@ void MainScreenView::update(const IAppModel::DTO& dto) {
         break;
       }
     }
+    screen.PostEvent(Event::Custom);
   }
 }
 
 void MainScreenView::createUi(IMainScreenPresenter& presenter) {
   togglePlay = [&presenter]() { presenter.togglePlay(); };
   setCurrentEntry = [&presenter](int e) { presenter.setCurrentEntry(e); };
+  setCurrentProgress = [&presenter](float p) {
+    presenter.setCurrentProgress(p);
+  };
 }

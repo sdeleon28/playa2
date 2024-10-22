@@ -19,6 +19,7 @@ public:
                                    const Identifier& property) override;
     void togglePlaying() override;
     void setCurrentEntry(int e) override;
+    void setCurrentProgress(float p) override;
     void notifyUpdate();
 private:
 

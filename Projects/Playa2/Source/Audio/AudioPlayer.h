@@ -4,15 +4,16 @@
 #include <juce_audio_utils/juce_audio_utils.h>
 using namespace juce;
 
-class AudioPlayer final : public AudioProcessor {
+class AudioPlayer final : public AudioProcessor, public ValueTree::Listener {
  public:
   struct State {
     bool playing = false;
     int currentSample = 0;
+    int currentEntry = 0;
     float progress = 0.f;
   };
 
-  AudioPlayer();
+  AudioPlayer(ValueTree appState);
   ~AudioPlayer() override;
 
   const String getName() const override;
@@ -33,15 +34,23 @@ class AudioPlayer final : public AudioProcessor {
   void processBlock(AudioBuffer<float>& buffer,
                     MidiBuffer& midiMessages) override;
   void play();
+  void pause();
   void stop();
+  void playNextTrack();
 
   State getState();
   void resetState();
   std::pair<float*, int> makeBufferLenPair(const char* clickBinary,
                                            int clickSize);
   void setCurrentFile(const File& file);
+  void setCurrentProgress(float progress);
 
  private:
+  void valueTreePropertyChanged(ValueTree& treeWhosePropertyHasChanged,
+                                const Identifier& property) override;
+
+  ValueTree appState;
+  std::mutex playbackLock;
   double sampleRate = 44100;
   int samplesPerBlock = 512;
   std::unique_ptr<AudioFormatReaderSource> audioFormatReaderSource;
@@ -50,4 +59,6 @@ class AudioPlayer final : public AudioProcessor {
   AudioFormatManager formatManager;
   std::atomic<bool> playing = true;
   std::atomic<int> currentSample = 0;
+  std::string currentFilePath;
+  int currentEntry = 0;
 };

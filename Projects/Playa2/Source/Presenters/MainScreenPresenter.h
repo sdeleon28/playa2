@@ -13,6 +13,7 @@ class MainScreenPresenter : public IMainScreenPresenter,
   void onStateUpdated(const IAppModel::DTO& dto) override;
   void togglePlay() override;
   void setCurrentEntry(int e) override;
+  void setCurrentProgress(float p) override;
 
  private:
   IAppModel& appModel;

@@ -34,4 +34,5 @@ class MainScreenView : public IMainScreenView {
   std::vector<std::string> entries = {};
   std::function<void()> togglePlay = nullptr;
   std::function<void(int)> setCurrentEntry = nullptr;
+  std::function<void(float)> setCurrentProgress = nullptr;
 };

@@ -7,4 +7,5 @@ public:
 
     virtual void togglePlay() = 0;
     virtual void setCurrentEntry(int e) = 0;
+    virtual void setCurrentProgress(float p) = 0;
 };

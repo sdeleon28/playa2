@@ -12,15 +12,12 @@ using namespace juce;
 #include "AudioCallback.h"
 #include "AudioPlayer.h"
 
-class AudioEngine final : public IAudioEngine, public ValueTree::Listener {
+class AudioEngine final : public IAudioEngine {
  public:
   AudioEngine(ValueTree appState);
   ~AudioEngine() override;
 
  private:
-  void valueTreePropertyChanged(ValueTree& treeWhosePropertyHasChanged,
-                                const Identifier& property) override;
-
   ValueTree appState;
   AudioSourcePlayer audioSourcePlayer;
   AudioDeviceManager audioDeviceManager;

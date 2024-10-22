@@ -35,11 +35,11 @@ IAppModel::DTO AppModel::getState() const {
     dto.currentEntry = entry;
   } else {
     dto.currentEntry = dto.playlist[(unsigned long)appState
-                                        .getProperty(AppSchema::currentEntry, 0)
+                                        .getProperty(AppSchema::reportedEntry, 0)
                                         .toString()
                                         .getIntValue()];
   }
-  dto.progress = appState.getProperty(AppSchema::progress, 0.0f);
+  dto.progress = appState.getProperty(AppSchema::reportedProgress, 0.0f);
   return dto;
 }
 
@@ -64,4 +64,9 @@ void AppModel::setCurrentEntry(int e) {
   jassert(e <
           appState.getChildWithName(AppSchema::playlistTag).getNumChildren());
   appState.setProperty(AppSchema::currentEntry, e, nullptr);
+}
+
+void AppModel::setCurrentProgress(float p) {
+  jassert(p >= 0.f && p <= 1.f);
+  appState.setProperty(AppSchema::progress, p, nullptr);
 }

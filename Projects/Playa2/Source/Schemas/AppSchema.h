@@ -9,8 +9,10 @@ class AppSchema {
   static Identifier playing;
   static Identifier currentSample;
   static Identifier currentEntry;
+  static Identifier reportedEntry;
   static Identifier playlistTag;
   static Identifier playlistEntryTag;
   static Identifier playlistEntryPath;
   static Identifier progress;
+  static Identifier reportedProgress;
 };
