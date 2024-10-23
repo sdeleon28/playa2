@@ -16,14 +16,33 @@ void MainScreenView::run() {
       menu,
   });
 
+  const size_t MAX_KEY_PRESSES = 10;
+  std::deque<std::string> keyPresses;
+  auto keyDisplay = Renderer([&] {
+    std::wstring displayText = L"";
+    for (const auto& key : keyPresses)
+      displayText += to_wstring(key);
+    std::reverse(displayText.begin(), displayText.end());
+    return text(displayText) | border;
+  });
+
   auto renderer = Renderer(component, [&] {
-    return vbox({gauge(progress), separator(), menu->Render()}) | border;
+    return vbox({gauge(progress), separator(), menu->Render(),
+                 keyDisplay->Render()}) |
+           border;
   });
 
   std::vector<char> nums = {'1', '2', '3', '4', '5', '6', '7', '8', '9', '0'};
   std::vector<char> progressChars = {'q', 'w', 'e', 'r', 't',
                                      'y', 'u', 'i', 'o', 'p'};
   out = CatchEvent(renderer, [&](Event event) {
+    if (event.is_character()) {
+      keyPresses.push_front(event.character());
+      if (keyPresses.size() > MAX_KEY_PRESSES) {
+        keyPresses.pop_back();
+      }
+      screen.PostEvent(Event::Custom);
+    }
     if (event == Event::Character('g')) {
       setCurrentEntry(0);
       return true;
