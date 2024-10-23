@@ -7,6 +7,10 @@ function print_usage() {
       |build
       |run
       |br: build and run
+      |config-prod
+      |build-prod
+      |run-prod
+      |prod: config-prod, build-prod and run-prod
       |make: config, build and run
       |lsp
       |help
@@ -28,6 +32,24 @@ function build() {
 
 function run() {
   ./build/tui/Projects/Playa2/Playa2Tui_artefacts/Debug/Playa2Tui "$@"
+}
+
+
+function configure_prod() {
+  mkdir -p build
+  cmake \
+    -DCMAKE_BUILD_TYPE:STRING=Release \
+    -H"." \
+    -B"build/tui-prod" \
+    -G Ninja
+}
+
+function build_prod() {
+  cmake --build build/tui-prod --target Playa2Tui
+}
+
+function run_prod() {
+  ./build/tui-prod/Projects/Playa2/Playa2Tui_artefacts/Release/Playa2Tui "$@"
 }
 
 function configure_lsp() {
@@ -82,6 +104,20 @@ case $1 in
     configure
     build
     run "${@:2}"
+    ;;
+  config-prod)
+    configure_prod
+    ;;
+  build-prod)
+    build_prod
+    ;;
+  run-prod)
+    run_prod "${@:2}"
+    ;;
+  prod)
+    configure_prod
+    build_prod
+    run_prod "${@:2}"
     ;;
   test-config)
     configure_test
